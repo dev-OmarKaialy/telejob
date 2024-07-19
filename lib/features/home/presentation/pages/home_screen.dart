@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:telejob/core/extensions/context_extensions.dart';
+import 'package:telejob/core/services/shared_preferences_service.dart';
 import 'package:telejob/core/utils/main_button.dart';
 import 'package:telejob/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:telejob/features/home/presentation/bloc/home_bloc.dart';
+import 'package:telejob/features/intro/presentation/pages/splash_screen.dart';
 import 'package:telejob/features/profile/presentation/pages/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -73,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               )
                               .shimmer(
                                   color: Colors.cyan[50],
-                                  duration: Durations.long1);
+                                  duration: Durations.extralong4);
                         },
                       ),
                     CubitStatus.success => switch (state.categories.length) {
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               )
                               .shimmer(
                                   color: Colors.cyan[50],
-                                  duration: Durations.long1);
+                                  duration: Durations.extralong4);
                         },
                       ),
                     CubitStatus.success => switch (state.workers.length) {
@@ -198,98 +200,121 @@ class _HomeScreenState extends State<HomeScreen> {
               child: BlocBuilder<HomeBloc, HomeState>(
                 builder: (context, state) {
                   return switch (state.indexRequests) {
-                    CubitStatus.success => ListView.builder(
-                        primary: false,
-                        itemCount: state.request.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Container(
-                                width: 1.sw,
-                                height: .2.sh,
-                                padding: const EdgeInsets.all(25),
-                                decoration: BoxDecoration(
-                                    color: state.request[index].status ==
-                                            'Accepted'
-                                        ? Colors.green[800]
-                                        : state.request[index].status ==
-                                                'Rejected'
-                                            ? Colors.red[800]
-                                            : context.primaryColor,
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                    CubitStatus.success => switch (state.request.length) {
+                        > 0 => ListView.builder(
+                            primary: false,
+                            itemCount: state.request.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Container(
+                                    width: 1.sw,
+                                    height: .2.sh,
+                                    padding: const EdgeInsets.all(25),
+                                    decoration: BoxDecoration(
+                                        color: state.request[index].status ==
+                                                'Accepted'
+                                            ? Colors.green[800]
+                                            : state.request[index].status ==
+                                                    'Rejected'
+                                                ? Colors.red[800]
+                                                : context.primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Column(
                                       children: [
-                                        Text(
-                                          'Request Id: ',
-                                          style: context.textTheme.titleMedium
-                                              ?.copyWith(
-                                                  color: context
-                                                      .scaffoldBackgroundColor,
-                                                  fontWeight: FontWeight.bold),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Request Id: ',
+                                              style: context
+                                                  .textTheme.titleMedium
+                                                  ?.copyWith(
+                                                      color: context
+                                                          .scaffoldBackgroundColor,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                            ),
+                                            Text(
+                                              state.request[index].id!
+                                                  .substring(0, 5),
+                                              style: context
+                                                  .textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                      color: context
+                                                          .scaffoldBackgroundColor),
+                                            )
+                                          ],
                                         ),
-                                        Text(
-                                          state.request[index].id!
-                                              .substring(0, 5),
-                                          style: context.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: context
-                                                      .scaffoldBackgroundColor),
-                                        )
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Worker Name: ',
+                                              style: context
+                                                  .textTheme.titleMedium
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: context
+                                                          .scaffoldBackgroundColor),
+                                            ),
+                                            Text(
+                                              '${state.request[index].worker!.name}',
+                                              style: context
+                                                  .textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                      color: context
+                                                          .scaffoldBackgroundColor),
+                                            )
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Job Categories: ',
+                                              style: context
+                                                  .textTheme.titleMedium
+                                                  ?.copyWith(
+                                                      color: context
+                                                          .scaffoldBackgroundColor,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                            ),
+                                            Text(
+                                              '${state.request[index].jobCategories!.map((e) => e.name)}',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: context
+                                                  .textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                      color: context
+                                                          .scaffoldBackgroundColor),
+                                            )
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Worker Name: ',
-                                          style: context.textTheme.titleMedium
-                                              ?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: context
-                                                      .scaffoldBackgroundColor),
-                                        ),
-                                        Text(
-                                          '${state.request[index].worker!.name}',
-                                          style: context.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: context
-                                                      .scaffoldBackgroundColor),
-                                        )
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Job Categories: ',
-                                          style: context.textTheme.titleMedium
-                                              ?.copyWith(
-                                                  color: context
-                                                      .scaffoldBackgroundColor,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          '${state.request[index].jobCategories!.map((e) => e.name)}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: context.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: context
-                                                      .scaffoldBackgroundColor),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ));
-                        },
-                      ),
+                                  ));
+                            },
+                          ),
+                        _ => const Center(
+                            child: Text('There Is No Data Yet'),
+                          )
+                      },
+                    CubitStatus.failed => Center(
+                        child: MainButton(
+                            text: 'Try Again',
+                            onPressed: () {
+                              context
+                                  .read<HomeBloc>()
+                                  .add(IndexRequestsEvent());
+                            })),
                     CubitStatus.loading => ListView.builder(
                         itemCount: 10,
                         itemBuilder: (context, index) {
@@ -299,13 +324,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             decoration: BoxDecoration(
                                 color: context.primaryColor,
                                 borderRadius: BorderRadius.circular(15)),
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            margin: const EdgeInsets.symmetric(vertical: 5),
                           )
                               .animate(
                                 onComplete: (controller) => controller.repeat(),
                               )
                               .shimmer(
-                                  duration: Durations.long1,
+                                  duration: Durations.extralong4,
                                   color: Colors.cyan[50]);
                         },
                       ),
@@ -358,9 +383,37 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Reports',
               ),
             ),
-            const ListTile(
-              leading: Icon(Icons.logout),
-              title: Text(
+            ListTile(
+              leading: const Icon(Icons.logout),
+              onTap: () async {
+                showAdaptiveDialog(
+                  context: context,
+                  builder: (context) => AlertDialog.adaptive(
+                    title: const Text('Are You Sure?'),
+                    content: const Text(''),
+                    actions: [
+                      MainButton(
+                          text: 'no',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }),
+                      MainButton(
+                          text: 'Yes',
+                          onPressed: () async {
+                            SharedPreferencesService.logOut();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SplashScreen(),
+                                ), (r) {
+                              return false;
+                            });
+                          })
+                    ],
+                  ),
+                );
+              },
+              title: const Text(
                 'LogOut',
               ),
             ),

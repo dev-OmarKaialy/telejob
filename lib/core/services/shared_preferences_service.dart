@@ -10,6 +10,10 @@ class SharedPreferencesService {
     await sp.setString('token', token);
   }
 
+  static void logOut() async {
+    await sp.clear();
+  }
+
   static String? getToken() {
     return sp.getString('token');
   }
