@@ -10,14 +10,14 @@ import 'handling_exception_request.dart';
 
 typedef FromJson<T> = T Function(String body);
 
-class PostApi<T> with HandlingExceptionRequest {
+class PutApi<T> with HandlingExceptionRequest {
   final Uri uri;
   final Map body;
   final FromJson fromJson;
   final bool isLogin;
   final Duration timeout;
 
-  const PostApi({
+  const PutApi({
     required this.uri,
     required this.body,
     required this.fromJson,
@@ -26,7 +26,7 @@ class PostApi<T> with HandlingExceptionRequest {
   });
 
   Future<T> callRequest() async {
-    // log('the token in the request header is $token'.logWhite, name: 'request manager ==> post function ');
+    // log('the token in the request header is $token'.logWhite, name: 'request manager ==> put function ');
     try {
       final token = SharedPreferencesService.getToken();
       var headers = {
@@ -35,7 +35,7 @@ class PostApi<T> with HandlingExceptionRequest {
         if (token != null) 'Authorization': 'Bearer $token'
       };
 
-      var request = http.Request('POST', uri);
+      var request = http.Request('PUT', uri);
       request.body = jsonEncode(body);
       request.headers.addAll(headers);
       http.StreamedResponse streamedResponse =
@@ -53,25 +53,25 @@ class PostApi<T> with HandlingExceptionRequest {
     } on HttpException {
       log(
         'http exception'.logRed,
-        name: 'RequestManager post function',
+        name: 'RequestManager put function',
       );
       rethrow;
     } on FormatException {
       log(
         'something went wrong in parsing the uri'.logRed,
-        name: 'RequestManager post function',
+        name: 'RequestManager put function',
       );
       rethrow;
     } on SocketException {
       log(
         'socket exception'.logRed,
-        name: 'RequestManager post function',
+        name: 'RequestManager put function',
       );
       rethrow;
     } catch (e) {
       log(
         e.toString().logRed,
-        name: 'RequestManager post function',
+        name: 'RequestManager put function',
       );
       rethrow;
     }

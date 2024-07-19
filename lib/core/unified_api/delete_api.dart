@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:telejob/core/services/shared_preferences_service.dart';
 
 import '../extensions/log_colors_extension.dart';
 import 'handling_exception_request.dart';
@@ -17,9 +18,11 @@ class DeleteApi<T> with HandlingExceptionRequest {
   });
   Future<T> callRequest() async {
     try {
+      final token = SharedPreferencesService.getToken();
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token'
       };
       var request = http.Request('DELETE', uri);
       request.headers.addAll(headers);

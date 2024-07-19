@@ -20,7 +20,7 @@ extension Validator on String {
 
   bool isValidPassword() {
     return RegExp(
-      r'[a-z0-9]{8,}',
+      r'[a-z0-9]{5,}',
       caseSensitive: false,
       multiLine: false,
     ).hasMatch(this);

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../extensions/log_colors_extension.dart';
+import '../services/shared_preferences_service.dart';
 import 'handling_exception_request.dart';
 
 typedef FromJson<T> = T Function(String body);
@@ -24,9 +25,12 @@ class GetApi<T> with HandlingExceptionRequest {
 
   Future<T> callRequest() async {
     try {
+      final token = SharedPreferencesService.getToken();
+
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token'
       };
       var request = http.Request('GET', uri);
       request.body = jsonEncode(body);
