@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ewaiq_mobile_v02/core/extensions/log_colors_extension.dart';
+import '../extensions/log_colors_extension.dart';
 
 class ApiVariables {
   /////////////

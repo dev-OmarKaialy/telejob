@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:ewaiq_mobile_v02/core/extensions/log_colors_extension.dart';
 import 'package:http/http.dart' as http;
 
+import '../extensions/log_colors_extension.dart';
 import 'handling_exception_request.dart';
 
 typedef FromJson<T> = T Function(String body);
