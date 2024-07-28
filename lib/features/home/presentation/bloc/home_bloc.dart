@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:telejob/core/utils/toaster.dart';
 import 'package:telejob/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:telejob/features/home/data/models/job_categories.dart';
 import 'package:telejob/features/home/data/models/requests_model.dart';
@@ -40,6 +41,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(state.copyWith(
             indexRequests: CubitStatus.success, request: r.requests));
       });
+    });
+    on<SendRequestEvent>((event, emit) async {
+      final result = await HomeRepo()
+          .createRequest(event.params['body'], event.params['images']);
+      result.fold((l) {
+        Toaster.showToast(l.message);
+      }, (r) {});
     });
   }
 }

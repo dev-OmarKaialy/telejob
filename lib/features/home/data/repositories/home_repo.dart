@@ -8,10 +8,10 @@ import 'package:telejob/features/home/data/models/workers_model.dart';
 import '../../../../core/error/failures.dart';
 
 class HomeRepo with HandlingExceptionManager {
-  Future<Either<Failure, void>> sendJobRequest(
-      Map<String, dynamic> body) async {
+  Future<Either<Failure, void>> createRequest(
+      Map<String, String> body, files) async {
     return wrapHandling(tryCall: () async {
-      return Right(await HomeDatasource().sendJobReqeust(body));
+      return Right(await HomeDatasource().createRequest(files, body));
     });
   }
 
@@ -31,6 +31,12 @@ class HomeRepo with HandlingExceptionManager {
       Map<String, String>? params) async {
     return wrapHandling(tryCall: () async {
       return Right(await HomeDatasource().indexWorkers(params ?? {}));
+    });
+  }
+
+  Future<Either<Failure, void>> sendRequest(dynamic body, dynamic files) async {
+    return wrapHandling(tryCall: () async {
+      return Right(await HomeDatasource().createRequest(files, body));
     });
   }
 }

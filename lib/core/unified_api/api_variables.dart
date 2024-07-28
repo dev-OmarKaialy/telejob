@@ -39,6 +39,7 @@ class ApiVariables {
   Uri reportWorker() => _customerUri(path: 'report');
   Uri requests() => _customerUri(path: 'requests');
   Uri sendRequest() => _customerUri(path: 'request');
+  Uri cancelRequest(String id) => _customerUri(path: 'request/$id');
   Uri singleRequests(String id) => _customerUri(path: 'request/$id');
   Uri jobCategories() => _mainUri(path: 'jobCategories');
   Uri profile() => _customerUri(path: 'profile');

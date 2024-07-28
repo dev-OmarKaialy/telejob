@@ -12,3 +12,10 @@ class IndexJobCategoriesEvent extends HomeEvent {}
 class IndexRequestsEvent extends HomeEvent {}
 
 class IndexWorkeresEvent extends HomeEvent {}
+
+class SendRequestEvent extends HomeEvent {
+  final Map<String, dynamic> params;
+  const SendRequestEvent({
+    required this.params,
+  });
+}

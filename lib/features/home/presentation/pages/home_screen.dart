@@ -3,9 +3,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:telejob/core/extensions/context_extensions.dart';
+import 'package:telejob/core/extensions/widget_extensions.dart';
 import 'package:telejob/core/services/shared_preferences_service.dart';
+import 'package:telejob/core/utils/drop_down_widget.dart';
 import 'package:telejob/core/utils/main_button.dart';
+import 'package:telejob/core/utils/main_text_field.dart';
 import 'package:telejob/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:telejob/features/home/presentation/bloc/home_bloc.dart';
 import 'package:telejob/features/intro/presentation/pages/splash_screen.dart';
@@ -30,6 +34,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text('Create Request'),
+        onPressed: () {
+          showAdaptiveDialog(
+              context: context,
+              builder: (context) {
+                return const CreateRequestDialog();
+              });
+        },
+      ),
       appBar: AppBar(),
       body: Padding(
         padding: EdgeInsets.all(15.sp),
@@ -432,5 +446,118 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+}
+
+class CreateRequestDialog extends StatefulWidget {
+  const CreateRequestDialog({
+    super.key,
+  });
+
+  @override
+  State<CreateRequestDialog> createState() => _CreateRequestDialogState();
+}
+
+class _CreateRequestDialogState extends State<CreateRequestDialog> {
+  final descriptionController = TextEditingController();
+  final imagesController = TextEditingController();
+  String? workerId;
+  String? categoryId;
+  List<String> images = [];
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(child: BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              MainTextField(
+                text: 'Description:',
+                maxLines: 2,
+                controller: descriptionController,
+              ),
+              15.verticalSpace,
+              DropDownWidget(
+                onChanged: (s) {
+                  categoryId = s;
+                },
+                listenableValue: ValueNotifier<String?>(null),
+                label: 'Job Category',
+                items: state.categories
+                    .map((e) => DropdownMenuItem(
+                          value: e.id!,
+                          child: Text(
+                            e.name!,
+                          ),
+                        ))
+                    .toList(),
+              ),
+              15.verticalSpace,
+              DropDownWidget(
+                listenableValue: ValueNotifier<String?>(null),
+                label: 'Select Worker',
+                onChanged: (s) {
+                  workerId = s;
+                },
+                items: state.workers
+                    .map((e) => DropdownMenuItem(
+                          value: e.id!,
+                          child: Text(
+                            e.name!,
+                          ),
+                        ))
+                    .toList(),
+              ),
+              15.verticalSpace,
+              MainTextField(
+                controller: imagesController,
+                enabled: false,
+                text: 'Choose Images(Optional):',
+                prefixIcon: const Icon(
+                  Icons.clear_rounded,
+                ).onTap(() {
+                  imagesController.clear();
+                  images.clear();
+                }),
+              ).onTap(() async {
+                ImagePicker().pickMultiImage(limit: 5).then((v) {
+                  if (v.isNotEmpty) {
+                    imagesController.text = '${v.length} Photos Selected';
+                    images.addAll(v.map((e) {
+                      return (e.path);
+                    }));
+                  }
+                });
+              }),
+              Row(
+                children: [
+                  MainButton(
+                      text: 'Cancel',
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                  MainButton(
+                      text: 'Send',
+                      onPressed: () {
+                        print(images);
+                        context.read<HomeBloc>().add(SendRequestEvent(params: {
+                              'images': <String, String>{}..addEntries(
+                                  images.map((e) =>
+                                      MapEntry<String, String>('images', e))),
+                              "body": {
+                                "workerId": workerId!,
+                                "JobCategories": categoryId!,
+                                'jobDescription': descriptionController.text
+                              }
+                            }));
+                      }),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    ));
   }
 }
