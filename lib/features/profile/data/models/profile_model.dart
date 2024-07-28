@@ -1,24 +1,26 @@
 // To parse this JSON data, do
 //
-//     final profileModel = profileModelFromJson(jsonString);
+//     final getProfileModel = getProfileModelFromJson(jsonString);
 
 import 'dart:convert';
 
-ProfileModel profileModelFromJson(String str) =>
-    ProfileModel.fromJson(json.decode(str));
+GetProfileModel getProfileModelFromJson(String str) =>
+    GetProfileModel.fromJson(json.decode(str));
 
-String profileModelToJson(ProfileModel data) => json.encode(data.toJson());
+String getProfileModelToJson(GetProfileModel data) =>
+    json.encode(data.toJson());
 
-class ProfileModel {
+class GetProfileModel {
   final String? message;
   final Customer? customer;
 
-  ProfileModel({
+  GetProfileModel({
     this.message,
     this.customer,
   });
 
-  factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
+  factory GetProfileModel.fromJson(Map<String, dynamic> json) =>
+      GetProfileModel(
         message: json["message"],
         customer: json["customer"] == null
             ? null

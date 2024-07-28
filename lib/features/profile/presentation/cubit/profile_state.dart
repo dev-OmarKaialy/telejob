@@ -3,7 +3,7 @@ part of 'profile_cubit.dart';
 class ProfileState {
   final CubitStatus profileStatus;
   final CubitStatus updateProfileStatus;
-  final ProfileModel? profile;
+  final GetProfileModel? profile;
   const ProfileState({
     this.profileStatus = CubitStatus.init,
     this.updateProfileStatus = CubitStatus.init,
@@ -13,7 +13,7 @@ class ProfileState {
   ProfileState copyWith({
     CubitStatus? profileStatus,
     CubitStatus? updateProfileStatus,
-    ProfileModel? profile,
+    GetProfileModel? profile,
   }) {
     return ProfileState(
       profileStatus: profileStatus ?? this.profileStatus,

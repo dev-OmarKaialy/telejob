@@ -6,7 +6,7 @@ import '../../../../core/error/failures.dart';
 import '../models/profile_model.dart';
 
 class ProfileRepo with HandlingExceptionManager {
-  Future<Either<Failure, ProfileModel>> getProfile() async {
+  Future<Either<Failure, GetProfileModel>> getProfile() async {
     return wrapHandling(tryCall: () async {
       return Right(await ProfileDatasource().getProfile());
     });
