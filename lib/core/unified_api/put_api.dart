@@ -27,8 +27,10 @@ class PutApi<T> with HandlingExceptionRequest {
 
   Future<T> callRequest() async {
     // log('the token in the request header is $token'.logWhite, name: 'request manager ==> put function ');
+
     try {
       final token = SharedPreferencesService.getToken();
+      log(token ?? '', name: 'token is ');
       var headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

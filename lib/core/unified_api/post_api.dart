@@ -29,6 +29,7 @@ class PostApi<T> with HandlingExceptionRequest {
     // log('the token in the request header is $token'.logWhite, name: 'request manager ==> post function ');
     try {
       final token = SharedPreferencesService.getToken();
+      log(token ?? '', name: 'token is ');
       var headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

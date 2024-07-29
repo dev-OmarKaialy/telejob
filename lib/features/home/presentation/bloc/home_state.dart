@@ -4,6 +4,7 @@ class HomeState {
   final CubitStatus indexRequests;
   final CubitStatus indexJobs;
   final CubitStatus indexWorkers;
+  final CubitStatus sendRequest;
   final List<JobCategory> categories;
   final List<WorkersModel> workers;
   final List<RequestModel> request;
@@ -11,6 +12,7 @@ class HomeState {
     this.indexRequests = CubitStatus.init,
     this.indexJobs = CubitStatus.init,
     this.indexWorkers = CubitStatus.init,
+    this.sendRequest = CubitStatus.init,
     this.categories = const [],
     this.workers = const [],
     this.request = const [],
@@ -20,6 +22,7 @@ class HomeState {
     CubitStatus? indexRequests,
     CubitStatus? indexJobs,
     CubitStatus? indexWorkers,
+    CubitStatus? sendRequest,
     List<JobCategory>? categories,
     List<WorkersModel>? workers,
     List<RequestModel>? request,
@@ -27,8 +30,9 @@ class HomeState {
     return HomeState(
       indexRequests: indexRequests ?? this.indexRequests,
       indexJobs: indexJobs ?? this.indexJobs,
-      indexWorkers: indexWorkers ?? this.indexWorkers,
       categories: categories ?? this.categories,
+      indexWorkers: indexWorkers ?? this.indexWorkers,
+      sendRequest: sendRequest ?? this.sendRequest,
       workers: workers ?? this.workers,
       request: request ?? this.request,
     );

@@ -26,6 +26,7 @@ class GetApi<T> with HandlingExceptionRequest {
   Future<T> callRequest() async {
     try {
       final token = SharedPreferencesService.getToken();
+      log(token ?? '', name: 'token is ');
 
       Map<String, String> headers = {
         'Content-Type': 'application/json',

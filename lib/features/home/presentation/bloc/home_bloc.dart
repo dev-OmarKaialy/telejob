@@ -43,11 +43,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       });
     });
     on<SendRequestEvent>((event, emit) async {
+      emit(state.copyWith(sendRequest: CubitStatus.loading));
       final result = await HomeRepo()
           .createRequest(event.params['body'], event.params['images']);
       result.fold((l) {
+        emit(state.copyWith(sendRequest: CubitStatus.failed));
         Toaster.showToast(l.message);
-      }, (r) {});
+      }, (r) {
+        emit(state.copyWith(
+          sendRequest: CubitStatus.success,
+        ));
+        add(IndexRequestsEvent());
+      });
     });
   }
 }
