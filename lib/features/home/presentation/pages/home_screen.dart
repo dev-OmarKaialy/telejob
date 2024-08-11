@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     context.read<HomeBloc>().add(IndexJobCategoriesEvent());
-    context.read<HomeBloc>().add(IndexWorkeresEvent());
+    context.read<HomeBloc>().add(const IndexWorkeresEvent());
     context.read<HomeBloc>().add(IndexRequestsEvent());
     super.initState();
   }
@@ -113,7 +113,122 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
-                              );
+                              ).onTap(() {
+                                showGeneralDialog(
+                                    context: context,
+                                    pageBuilder: (context, animation, _) {
+                                      context.read<HomeBloc>().add(
+                                          IndexWorkeresEvent(
+                                              cateId:
+                                                  state.categories[index].id!));
+                                      return Scaffold(
+                                        body: BlocBuilder<HomeBloc, HomeState>(
+                                          builder: (context, state) {
+                                            return switch (state.indexWorkers) {
+                                              CubitStatus.failed => Center(
+                                                  child: MainButton(
+                                                      text: 'Try Again',
+                                                      onPressed: () {
+                                                        context
+                                                            .read<HomeBloc>()
+                                                            .add(
+                                                                const IndexWorkeresEvent());
+                                                      }),
+                                                ),
+                                              CubitStatus.loading =>
+                                                ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount: 5,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                          color: context
+                                                              .primaryColor,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      15)),
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 5),
+                                                      width: 80.w,
+                                                      height: 40.h,
+                                                    )
+                                                        .animate(
+                                                          onComplete:
+                                                              (controller) =>
+                                                                  controller
+                                                                      .repeat(),
+                                                        )
+                                                        .shimmer(
+                                                            color:
+                                                                Colors.cyan[50],
+                                                            duration: Durations
+                                                                .extralong4);
+                                                  },
+                                                ),
+                                              CubitStatus.success => switch (
+                                                    state.workers.length) {
+                                                  > 0 => GridView.builder(
+                                                      gridDelegate:
+                                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                                              crossAxisCount: 2,
+                                                              childAspectRatio:
+                                                                  2.3),
+                                                      itemCount:
+                                                          state.workers.length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Card(
+                                                          color: context
+                                                              .primaryColor
+                                                              .withOpacity(
+                                                                  index.isEven
+                                                                      ? .6
+                                                                      : .4),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Center(
+                                                              child: Text(
+                                                                state
+                                                                    .workers[
+                                                                        index]
+                                                                    .name!,
+                                                                style: context
+                                                                    .textTheme
+                                                                    .titleMedium
+                                                                    ?.copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: context
+                                                                            .scaffoldBackgroundColor),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  _ => const Center(
+                                                      child: Text(
+                                                          'There Is No Workers Available'),
+                                                    )
+                                                },
+                                              _ => const SizedBox(),
+                                            };
+                                          },
+                                        ),
+                                      );
+                                    }).then((v) {
+                                  context
+                                      .read<HomeBloc>()
+                                      .add(const IndexWorkeresEvent());
+                                });
+                              });
                             },
                           ),
                         _ => const SizedBox()
@@ -137,14 +252,14 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, state) {
                 return SizedBox(
                   height: .1.sh,
-                  child: switch (state.indexJobs) {
+                  child: switch (state.indexWorkers) {
                     CubitStatus.failed => Center(
                         child: MainButton(
                             text: 'Try Again',
                             onPressed: () {
                               context
                                   .read<HomeBloc>()
-                                  .add(IndexWorkeresEvent());
+                                  .add(const IndexWorkeresEvent());
                             }),
                       ),
                     CubitStatus.loading => ListView.builder(
