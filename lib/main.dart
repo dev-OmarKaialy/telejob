@@ -15,7 +15,7 @@ void main() async {
   EasyLocalization.ensureInitialized();
   await SharedPreferencesService.init();
   runApp(EasyLocalization(
-    path: 'assets/tranlsations',
+    path: 'assets/translations',
     supportedLocales: const [
       Locale('en'),
       Locale('ar'),
