@@ -468,6 +468,9 @@ class _CreateRequestDialogState extends State<CreateRequestDialog> {
   Widget build(BuildContext context) {
     return Dialog(child: BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        if (state.sendRequest == CubitStatus.success) {
+          Navigator.pop(context);
+        }
         return Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(

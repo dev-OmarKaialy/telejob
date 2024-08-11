@@ -19,6 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await SharedPreferencesService.setToken(r.jwt!);
       });
     });
+
     on<RegisterEvent>((event, emit) async {
       emit(state.copyWith(status: CubitStatus.loading));
       final result = await AuthRepo().register(event.toMap());
