@@ -25,7 +25,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<IndexWorkeresEvent>((event, emit) async {
       emit(state.copyWith(indexWorkers: CubitStatus.loading));
       final result = await HomeRepo().indexWorkers({
-        if (event.cateId != null) "jobCategoriesId": event.cateId!,
+        if (event.cateId != null) "jobCategoryId": event.cateId!,
       });
       result.fold((l) {
         emit(state.copyWith(indexWorkers: CubitStatus.failed));
