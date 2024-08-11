@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (isFirst ?? true) {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) {
-          return const IntroScreen();
+          return const TeleJobStartPage();
         }));
       } else {
         final isAuth = SharedPreferencesService.getToken();
